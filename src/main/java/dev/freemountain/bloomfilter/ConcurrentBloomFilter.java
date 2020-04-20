@@ -31,7 +31,7 @@ public class ConcurrentBloomFilter implements SimpleBloomFilter {
         final List<Integer> hashValues = BloomFilterHasher.getHashValues(value);
         hashValues.stream().forEach(hashValue -> {
             // Find array entry
-            int address = (hashValue / BITS_IN_LONG) % MAX_CAPACITY;
+            int address = (int) (hashValue / (double) BITS_IN_LONG) % MAX_CAPACITY;
             // Find bit
             int offset = hashValue % BITS_IN_LONG;
             long mask = 1 << offset;
@@ -50,7 +50,7 @@ public class ConcurrentBloomFilter implements SimpleBloomFilter {
         final List<Integer> hashValues = BloomFilterHasher.getHashValues(value);
         return hashValues.stream().allMatch(hashValue -> {
             // Find array entry
-            int address = (hashValue / BITS_IN_LONG) % MAX_CAPACITY;
+            int address = (int) (hashValue / (double) BITS_IN_LONG) % MAX_CAPACITY;
             // Find bit
             int offset = hashValue % BITS_IN_LONG;
             // Isolate bit
