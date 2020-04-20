@@ -30,15 +30,20 @@ public class ConcurrentBloomFilter implements SimpleBloomFilter {
         }
         final List<Integer> hashValues = BloomFilterHasher.getHashValues(value);
         hashValues.stream().forEach(hashValue -> {
+            boolean success;
             // Find array entry
             int address = (int) (hashValue / (double) BITS_IN_LONG) % MAX_CAPACITY;
             // Find bit
             int offset = hashValue % BITS_IN_LONG;
             long mask = 1 << offset;
-            long oldValue = longArray.get(address);
-            // Set bit
-            long newValue = oldValue | mask;
-            longArray.compareAndSet(address, oldValue, newValue);
+            do {
+                long oldValue = longArray.get(address);
+                // Set bit
+                long newValue = oldValue | mask;
+                success = longArray.compareAndSet(address, oldValue, newValue);
+            }
+            while (!success);
+
         });
     }
 
