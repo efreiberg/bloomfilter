@@ -20,7 +20,7 @@ public class BloomFilter implements SimpleBloomFilter {
         if (value == null) {
             throw new NullPointerException();
         }
-        final List<Integer> hashValues = computeHashValues(value);
+        final List<Integer> hashValues = BloomFilterHasher.getHashValues(value);
         hashValues.stream().forEach(hashValue -> filter.set(hashValue % MAX_CAPACITY));
     }
 
@@ -28,11 +28,7 @@ public class BloomFilter implements SimpleBloomFilter {
         if (value == null) {
             throw new NullPointerException();
         }
-        final List<Integer> hashValues = computeHashValues(value);
+        final List<Integer> hashValues = BloomFilterHasher.getHashValues(value);
         return hashValues.stream().allMatch(hashValue -> filter.get(hashValue % MAX_CAPACITY));
-    }
-
-    private List<Integer> computeHashValues(String value) {
-        return BloomFilterHasher.getHashValues(value);
     }
 }
