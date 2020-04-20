@@ -17,7 +17,8 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class SimpleBloomFilterTest {
 
-    private static String[] words;
+    private static String[] dictionaryWords;
+    private static String[] nonsensicalWords;
     private Function<Integer, SimpleBloomFilter> bloomFilterSupplier;
 
     public SimpleBloomFilterTest(Function<Integer, SimpleBloomFilter> filterSupplier) {
@@ -35,14 +36,18 @@ public class SimpleBloomFilterTest {
 
     @BeforeClass
     public static void beforeAll() throws Exception {
-        // load words into memory
+        // load test words into memory
         URL url = Resources.getResource("listOfWords.csv");
         String result = Resources.toString(url, Charsets.UTF_8);
-        words = result.split(",");
+        dictionaryWords = result.split(",");
+
+        url = Resources.getResource("randomWords.csv");
+        result = Resources.toString(url, Charsets.UTF_8);
+        nonsensicalWords = result.split(",");
     }
 
     public void setup(SimpleBloomFilter bloomFilter) {
-        for (String word : words) {
+        for (String word : dictionaryWords) {
             bloomFilter.set(word);
         }
     }
@@ -85,8 +90,21 @@ public class SimpleBloomFilterTest {
     public void containsAll() {
         SimpleBloomFilter bloomFilter = bloomFilterSupplier.apply(1_000_000_000);
         setup(bloomFilter);
-        for (String word : words) {
+        for (String word : dictionaryWords) {
             assertTrue(bloomFilter.likelyContains(word));
         }
+    }
+
+    @Test
+    public void tolerableCollisionRate() {
+        SimpleBloomFilter bloomFilter = bloomFilterSupplier.apply(1_000_000);
+        setup(bloomFilter);
+        double collisions = 0;
+        for (String word : nonsensicalWords) {
+            if (bloomFilter.likelyContains(word)) {
+                collisions++;
+            }
+        }
+        assertTrue((dictionaryWords.length - collisions) / dictionaryWords.length > 0.95);
     }
 }
