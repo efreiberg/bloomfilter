@@ -3,6 +3,12 @@ package dev.freemountain.bloomfilter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLongArray;
 
+/**
+ * Implements a SimpleBloomFilter using an underlying AtomicLongArray for memory visibility and CAS operations and the
+ * default hashing strategy. Somewhat inspired by the Guava bloom filter implementation.
+ * <p>
+ * This class is intended to be thread-safe.
+ */
 public class ConcurrentBloomFilter implements SimpleBloomFilter {
 
     private static final int BITS_IN_LONG = 64;

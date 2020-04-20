@@ -2,6 +2,7 @@ package dev.freemountain.spellchecker;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
@@ -27,6 +28,18 @@ public class SpellCheckerTest {
     @Before
     public void beforeEach() {
         spellChecker = new SpellChecker(new BloomFilter(1_000_000_000), dictionaryWords);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void setNullThrows() {
+        spellChecker.addNewTerm(null);
+        fail();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void getNullThrows() {
+        spellChecker.isCorrectSpelling(null);
+        fail();
     }
 
     @Test

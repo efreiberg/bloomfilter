@@ -6,6 +6,12 @@ import com.google.common.hash.Hashing;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Provides the internal hashing strategy for our SimpleBloomFilter implementations and is subject to change. It
+ * currently uses a 128bit Murmer3 hash, which is a faster, non-cryptographic hashing mechanism, which was chosen based
+ * on advice from the Guava hashing documentation. Returned hash values consist of the lower 64 bits of the full 128 bit
+ * Murmer3 hash.
+ */
 class BloomFilterHasher {
 
     private static final List<HashFunction> hashFunctions = ImmutableList.copyOf(new HashFunction[]{

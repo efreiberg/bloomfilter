@@ -3,6 +3,11 @@ package dev.freemountain.bloomfilter;
 import java.util.BitSet;
 import java.util.List;
 
+/**
+ * Implements a SimpleBloomFilter using an underlying BitSet and the default hashing strategy.
+ * <p>
+ * This is not a thread-safe class.
+ */
 public class BloomFilter implements SimpleBloomFilter {
 
     private final BitSet filter;
